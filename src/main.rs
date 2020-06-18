@@ -23,6 +23,7 @@ fn tokenize(string: String) -> Result<Vec<Token>, String> {
     'mainloop: while index < string.len() {
         let rest: String = string.chars().skip(index).collect();
 
+        // TODO: Use pattern matching instead
         if let Some(m) = Regex::new(r#"^'([^\\]|\\.)*?'|^"([^\\]|\\.)*?"#)
             .unwrap()
             .captures(&rest)
