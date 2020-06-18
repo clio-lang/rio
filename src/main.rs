@@ -2,8 +2,11 @@ extern crate regex;
 use regex::Regex;
 
 fn main() {
-    let tokens = tokenize("hello 'World'".to_string()).unwrap();
-    println!("{:?}", tokens);
+    let tokens = tokenize("hello 'World' 1 23 345".to_string()).unwrap();
+
+    for token in tokens {
+        println!("{:?}", token);
+    }
 }
 
 #[derive(Debug)]
@@ -20,7 +23,6 @@ fn tokenize(string: String) -> Result<Vec<Token>, String> {
     'mainloop: while index < string.len() {
         let rest: String = string.chars().skip(index).collect();
 
-        println!("Rest: {:?}", rest);
         if let Some(m) = Regex::new(r#"^'([^\\]|\\.)*?'|^"([^\\]|\\.)*?"#)
             .unwrap()
             .captures(&rest)
@@ -29,9 +31,22 @@ fn tokenize(string: String) -> Result<Vec<Token>, String> {
                 name: "string".to_string(),
                 raw: m.get(0).unwrap().as_str().to_string(),
             };
+            index += token.raw.len();
+            println!("{:?}", token.raw.len());
             tokens.push(token);
+        } else if let Some(m) = Regex::new(r#"^(0|-?[1-9][0-9']*)(n|(\.[0-9']+))?"#)
+            .unwrap()
+            .captures(&rest)
+        {
+            let token = Token {
+                name: "number".to_string(),
+                raw: m.get(0).unwrap().as_str().to_string(),
+            };
+            index += token.raw.len();
+            tokens.push(token);
+        } else {
+            index += 1;
         }
-        index += 1;
         continue 'mainloop;
     }
 
