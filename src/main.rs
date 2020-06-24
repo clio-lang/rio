@@ -4,7 +4,7 @@ mod cursor;
 use cursor::Cursor;
 
 fn main() {
-    let tokens = tokenize(&"0 -> 1 => 2");
+    let tokens = tokenize(&"0: -> 1 => 2");
 
     for token in tokens {
         println!("{:?}", token)
@@ -39,6 +39,8 @@ pub enum TokenKind {
     Star,
     /// "/"
     Slash,
+    /// ":"
+    Colon,
     /// "="
     Equals,
     /// "->"
@@ -108,6 +110,7 @@ impl Cursor<'_> {
                     Equals
                 }
             }
+            ':' => Colon,
             _ => Unknown,
         };
         Token::new(token_kind, self.len_consumed())
