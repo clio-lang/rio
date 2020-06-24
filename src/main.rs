@@ -1,12 +1,11 @@
 extern crate regex;
-use crate::TokenKind::Unknown;
-use crate::TokenKind::Whitespace;
+use crate::TokenKind::*;
 
 mod cursor;
 use cursor::Cursor;
 
 fn main() {
-    let tokens = tokenize(&"1 12 123");
+    let tokens = tokenize(&"1 * 12 + 123 - 1 / 0");
 
     for token in tokens {
         println!("{:?}", token)
@@ -33,7 +32,14 @@ pub enum TokenKind {
     Literal {
         kind: LiteralKind,
     },
-
+    /// "+"
+    Plus,
+    /// "-"
+    Minus,
+    /// "*"
+    Star,
+    /// "/"
+    Slash,
     /// Unknown token, not expected by the lexer, e.g. "№"
     Unknown,
 }
@@ -80,6 +86,10 @@ impl Cursor<'_> {
 
                 TokenKind::Literal { kind }
             }
+            '+' => Plus,
+            '+' => Minus,
+            '*' => Star,
+            '/' => Slash,
             _ => Unknown,
         };
         Token::new(token_kind, self.len_consumed())
