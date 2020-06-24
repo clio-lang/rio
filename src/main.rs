@@ -32,7 +32,6 @@ pub enum TokenKind {
     Whitespace,
     Literal {
         kind: LiteralKind,
-        suffix_start: usize,
     },
 
     /// Unknown token, not expected by the lexer, e.g. "№"
@@ -42,7 +41,7 @@ pub enum TokenKind {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum LiteralKind {
     /// "12_u8", "0o100", "0b120i99"
-    Int { empty_int: bool },
+    Int,
 }
 
 /// Creates an iterator that produces tokens from the input string.
@@ -76,6 +75,11 @@ impl Cursor<'_> {
         let first_char = self.bump().unwrap();
         let token_kind = match first_char {
             c if is_whitespace(c) => self.whitespace(),
+            c @ '0'..='9' => {
+                let kind = self.number();
+
+                TokenKind::Literal { kind }
+            }
             _ => Unknown,
         };
         Token::new(token_kind, self.len_consumed())
@@ -100,5 +104,27 @@ impl Cursor<'_> {
         debug_assert!(is_whitespace(self.prev()));
         self.eat_while(is_whitespace);
         Whitespace
+    }
+
+    fn number(&mut self) -> LiteralKind {
+        self.eat_digits();
+        LiteralKind::Int
+    }
+
+    fn eat_digits(&mut self) -> bool {
+        let mut has_digits = false;
+        loop {
+            match self.first() {
+                '_' => {
+                    self.bump();
+                }
+                '0'..='9' => {
+                    has_digits = true;
+                    self.bump();
+                }
+                _ => break,
+            }
+        }
+        has_digits
     }
 }
