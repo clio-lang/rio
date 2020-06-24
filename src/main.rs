@@ -5,7 +5,7 @@ mod cursor;
 use cursor::Cursor;
 
 fn main() {
-    let tokens = tokenize(&"1 * 12 + 123 - 1 / 0");
+    let tokens = tokenize(&"0 -> 1");
 
     for token in tokens {
         println!("{:?}", token)
@@ -40,6 +40,8 @@ pub enum TokenKind {
     Star,
     /// "/"
     Slash,
+    /// "->"
+    Pipe,
     /// Unknown token, not expected by the lexer, e.g. "№"
     Unknown,
 }
@@ -87,7 +89,13 @@ impl Cursor<'_> {
                 TokenKind::Literal { kind }
             }
             '+' => Plus,
-            '-' => Minus,
+            '-' => {
+                if self.first() == '>' {
+                    self.pipe()
+                } else {
+                    Minus
+                }
+            }
             '*' => Star,
             '/' => Slash,
             _ => Unknown,
@@ -119,6 +127,11 @@ impl Cursor<'_> {
     fn number(&mut self) -> LiteralKind {
         self.eat_digits();
         LiteralKind::Int
+    }
+
+    fn pipe(&mut self) -> TokenKind {
+        self.bump();
+        Pipe
     }
 
     fn eat_digits(&mut self) -> bool {
