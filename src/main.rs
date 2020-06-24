@@ -1,4 +1,3 @@
-extern crate regex;
 use crate::TokenKind::*;
 
 mod cursor;
