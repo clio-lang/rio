@@ -1,5 +1,8 @@
 use crate::TokenKind::*;
 
+#[cfg(test)]
+mod tests;
+
 mod cursor;
 use cursor::Cursor;
 
@@ -11,7 +14,7 @@ fn main() {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct Token {
     pub kind: TokenKind,
     pub len: usize,
