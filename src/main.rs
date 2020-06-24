@@ -87,7 +87,7 @@ impl Cursor<'_> {
                 TokenKind::Literal { kind }
             }
             '+' => Plus,
-            '+' => Minus,
+            '-' => Minus,
             '*' => Star,
             '/' => Slash,
             _ => Unknown,
