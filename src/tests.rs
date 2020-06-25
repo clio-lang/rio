@@ -12,7 +12,8 @@ mod tests {
                 len: 1,
                 kind: TokenKind::Literal {
                     kind: LiteralKind::Int
-                }
+                },
+                raw: "1".to_owned()
             }
         );
 
@@ -20,7 +21,8 @@ mod tests {
             tokens.nth(0).unwrap(),
             Token {
                 len: 1,
-                kind: TokenKind::Whitespace
+                kind: TokenKind::Whitespace,
+                raw: " ".to_owned()
             }
         );
 
@@ -28,7 +30,8 @@ mod tests {
             tokens.nth(0).unwrap(),
             Token {
                 len: 1,
-                kind: TokenKind::Equals
+                kind: TokenKind::Equals,
+                raw: "=".to_owned()
             }
         );
 
@@ -36,7 +39,8 @@ mod tests {
             tokens.nth(0).unwrap(),
             Token {
                 len: 1,
-                kind: TokenKind::Whitespace
+                kind: TokenKind::Whitespace,
+                raw: " ".to_owned()
             }
         );
 
@@ -46,7 +50,8 @@ mod tests {
                 len: 1,
                 kind: TokenKind::Literal {
                     kind: LiteralKind::Int
-                }
+                },
+                raw: "2".to_owned()
             }
         );
     }
