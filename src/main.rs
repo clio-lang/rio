@@ -18,11 +18,12 @@ fn main() {
 pub struct Token {
     pub kind: TokenKind,
     pub len: usize,
+    pub raw: String,
 }
 
 impl Token {
-    fn new(kind: TokenKind, len: usize) -> Token {
-        Token { kind, len }
+    fn new(kind: TokenKind, len: usize, raw: String) -> Token {
+        Token { kind, len, raw }
     }
 }
 
@@ -88,6 +89,8 @@ pub fn is_whitespace(c: char) -> bool {
 impl Cursor<'_> {
     /// Parses a token from the input string.
     fn advance_token(&mut self) -> Token {
+        // Original chars used to identify the token later on
+        let original_chars = self.chars();
         let first_char = self.bump().unwrap();
         let token_kind = match first_char {
             c if is_whitespace(c) => self.whitespace(),
@@ -116,7 +119,12 @@ impl Cursor<'_> {
             ':' => Colon,
             _ => Unknown,
         };
-        Token::new(token_kind, self.len_consumed())
+
+        let len = self.len_consumed();
+        let mut raw = original_chars.collect::<String>();
+        // Cut the original tokens to the length of the token
+        raw.truncate(len);
+        Token::new(token_kind, len, raw)
     }
 
     /// Eats symbols while predicate returns true or until the end of file is reached.
