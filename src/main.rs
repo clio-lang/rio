@@ -7,7 +7,7 @@ mod cursor;
 use cursor::Cursor;
 
 fn main() {
-    let tokens = tokenize(&"0: -> 1 => 2");
+    let tokens = tokenize(&"0: 'asd' -> 1 => 2");
 
     for token in tokens {
         println!("{:?}", token)
@@ -57,8 +57,8 @@ pub enum TokenKind {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum LiteralKind {
-    /// "12_u8", "0o100", "0b120i99"
     Int,
+    Str,
 }
 
 /// Creates an iterator that produces tokens from the input string.
@@ -98,6 +98,11 @@ impl Cursor<'_> {
                 let kind = self.number();
 
                 TokenKind::Literal { kind }
+            }
+            '"' | '\'' => {
+                let kind = self.string();
+
+                TokenKind::Literal { kind: kind }
             }
             '+' => Plus,
             '-' => {
@@ -153,6 +158,12 @@ impl Cursor<'_> {
         LiteralKind::Int
     }
 
+    fn string(&mut self) -> LiteralKind {
+        self.eat_string();
+
+        LiteralKind::Str
+    }
+
     fn pipe(&mut self) -> TokenKind {
         self.bump();
         Pipe
@@ -178,5 +189,19 @@ impl Cursor<'_> {
             }
         }
         has_digits
+    }
+
+    fn eat_string(&mut self) {
+        // FIXME: double quoted strings could probably be ended by single quoted, and vice versa.
+        // Possible fix: Pass the token of the string beginning down to this method and check against it.
+        loop {
+            match self.first() {
+                '"' | '\'' => break,
+                _ => self.bump(),
+            };
+        }
+
+        // Eat last quote
+        self.bump();
     }
 }
