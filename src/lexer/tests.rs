@@ -1,7 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::*;
-    use lexer::*;
+    use crate::lexer::*;
 
     #[test]
     fn test_basic_tokenizing() {

@@ -3,6 +3,9 @@ pub(crate) mod cursor;
 use self::TokenKind::*;
 use cursor::Cursor;
 
+#[cfg(test)]
+mod tests;
+
 #[derive(Debug, PartialEq, Eq)]
 pub struct Token {
     pub kind: TokenKind,
