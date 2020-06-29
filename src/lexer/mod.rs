@@ -59,6 +59,10 @@ pub enum TokenKind {
     SquareBraceClose,
     /// "=>"
     Assignment,
+    /// "\t"
+    Tab,
+    /// "\n"
+    CarriageReturn,
     /// Unknown token, not expected by the lexer, e.g. "№"
     Unknown,
 }
@@ -97,7 +101,7 @@ pub fn first_token(input: &str) -> Token {
 
 pub fn is_whitespace(c: char) -> bool {
     match c {
-        '\t' | '\n' | 'r' | ' ' => true,
+        ' ' => true,
         _ => false,
     }
 }
@@ -163,6 +167,8 @@ impl Cursor<'_> {
 
                 Identifier { kind }
             }
+            '\n' => CarriageReturn,
+            '\t' => Tab,
             _ => Unknown,
         };
 
