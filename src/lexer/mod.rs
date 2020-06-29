@@ -45,6 +45,18 @@ pub enum TokenKind {
     Equals,
     /// "->"
     Pipe,
+    /// "<"
+    SmallerThen,
+    /// ">"
+    LargerThen,
+    /// "("
+    BraceOpen,
+    /// ")"
+    BraceClose,
+    /// "["
+    SquareBraceOpen,
+    /// "]"
+    SquareBraceClose,
     /// "=>"
     Assignment,
     /// Unknown token, not expected by the lexer, e.g. "№"
@@ -139,6 +151,12 @@ impl Cursor<'_> {
                 }
             }
             ':' => Colon,
+            '<' => SmallerThen,
+            '>' => LargerThen,
+            '(' => BraceOpen,
+            ')' => BraceClose,
+            '[' => SquareBraceOpen,
+            ']' => SquareBraceClose,
             c if is_id_start(c) => {
                 let kind = self.identifier(c);
 
