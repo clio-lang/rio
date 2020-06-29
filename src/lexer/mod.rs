@@ -73,6 +73,7 @@ pub enum LiteralKind {
 pub enum IdentifierKind {
     If,
     Else,
+    Function,
     Unknown,
 }
 
@@ -216,6 +217,7 @@ impl Cursor<'_> {
         match original {
             c if c == "if".to_owned() => IdentifierKind::If,
             c if c == "else".to_owned() => IdentifierKind::Else,
+            c if c == "fn".to_owned() => IdentifierKind::Function,
             _ => IdentifierKind::Unknown,
         }
     }
