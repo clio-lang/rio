@@ -27,6 +27,10 @@ pub enum TokenKind {
     Literal {
         kind: LiteralKind,
     },
+    /// Keywords such as 'if' or 'else'
+    Identifier {
+        kind: IdentifierKind,
+    },
     /// "+"
     Plus,
     /// "-"
@@ -53,6 +57,12 @@ pub enum LiteralKind {
     Str,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
+pub enum IdentifierKind {
+    If,
+    Else,
+}
+
 /// Creates an iterator that produces tokens from the input string.
 pub fn tokenize(mut input: &str) -> impl Iterator<Item = Token> + '_ {
     std::iter::from_fn(move || {
@@ -76,6 +86,20 @@ pub fn is_whitespace(c: char) -> bool {
         '\t' | '\n' | 'r' | ' ' => true,
         _ => false,
     }
+}
+
+/// True if `c` is valid as a first character of an identifier.
+/// See [Rust language reference](https://doc.rust-lang.org/reference/identifiers.html) for
+/// a formal definition of valid identifier name.
+pub fn is_id_start(c: char) -> bool {
+    ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || c == '_'
+}
+
+/// True if `c` is valid as a non-first character of an identifier.
+/// See [Rust language reference](https://doc.rust-lang.org/reference/identifiers.html) for
+/// a formal definition of valid identifier name.
+pub fn is_id_continue(c: char) -> bool {
+    ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || ('0' <= c && c <= '9') || c == '_'
 }
 
 impl Cursor<'_> {
@@ -114,6 +138,11 @@ impl Cursor<'_> {
                 }
             }
             ':' => Colon,
+            c if is_id_start(c) => {
+                let kind = self.identifier(c);
+
+                Identifier { kind }
+            }
             _ => Unknown,
         };
 
@@ -154,6 +183,22 @@ impl Cursor<'_> {
         self.eat_string();
 
         LiteralKind::Str
+    }
+
+    fn identifier(&mut self, first_char: char) -> IdentifierKind {
+        let mut original: String = self.chars().collect::<String>();
+        let len = self.eat_while(is_id_continue);
+
+        // Cut original "rest"-character stream to length of token
+        // and prepend first character, because it has been eaten beforehand
+        original.truncate(len);
+        original = format!("{}{}", first_char, original);
+
+        match original {
+            c if c == "if".to_owned() => IdentifierKind::If,
+            c if c == "else".to_owned() => IdentifierKind::Else,
+            _ => panic!("Unexpected token"),
+        }
     }
 
     fn pipe(&mut self) -> TokenKind {
