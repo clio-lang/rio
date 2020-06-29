@@ -61,6 +61,7 @@ pub enum LiteralKind {
 pub enum IdentifierKind {
     If,
     Else,
+    Unknown,
 }
 
 /// Creates an iterator that produces tokens from the input string.
@@ -197,7 +198,7 @@ impl Cursor<'_> {
         match original {
             c if c == "if".to_owned() => IdentifierKind::If,
             c if c == "else".to_owned() => IdentifierKind::Else,
-            _ => panic!("Unexpected token"),
+            _ => IdentifierKind::Unknown,
         }
     }
 
