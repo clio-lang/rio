@@ -98,4 +98,39 @@ mod tests {
             }
         );
     }
+
+    #[test]
+    fn test_comments() {
+        let mut tokens = tokenize(
+            "
+        -- foo
+        fn fib n:
+        ",
+        )
+        .filter(|t| {
+            t.kind != TokenKind::Whitespace
+                && t.kind != TokenKind::Tab
+                && t.kind != TokenKind::CarriageReturn
+        });
+
+        assert_eq!(
+            tokens.nth(0).unwrap(),
+            Token {
+                len: 6,
+                kind: TokenKind::Comment,
+                raw: "-- foo".to_owned(),
+            }
+        );
+
+        assert_eq!(
+            tokens.nth(0).unwrap(),
+            Token {
+                len: 2,
+                kind: TokenKind::Identifier {
+                    kind: IdentifierKind::Function
+                },
+                raw: "fn".to_owned(),
+            }
+        );
+    }
 }

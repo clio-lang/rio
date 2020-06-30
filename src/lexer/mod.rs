@@ -31,6 +31,8 @@ pub enum TokenKind {
     Identifier {
         kind: IdentifierKind,
     },
+    /// -- Lorem Ipsum
+    Comment,
     /// "+"
     Plus,
     /// "-"
@@ -143,6 +145,8 @@ impl Cursor<'_> {
             '-' => {
                 if self.first() == '>' {
                     self.pipe()
+                } else if self.first() == '-' {
+                    self.comment()
                 } else {
                     Minus
                 }
@@ -233,6 +237,15 @@ impl Cursor<'_> {
     fn pipe(&mut self) -> TokenKind {
         self.bump();
         Pipe
+    }
+
+    fn comment(&mut self) -> TokenKind {
+        // FIXME: Might lead to a bug, if End of file is encountered
+        while self.first() != '\n' {
+            self.bump();
+        }
+
+        TokenKind::Comment
     }
 
     fn assignment(&mut self) -> TokenKind {
