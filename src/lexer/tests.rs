@@ -82,4 +82,20 @@ mod tests {
             }
         );
     }
+
+    #[test]
+    fn test_functions() {
+        let mut tokens = tokenize("fn fib n:");
+
+        assert_eq!(
+            tokens.nth(0).unwrap(),
+            Token {
+                len: 2,
+                kind: TokenKind::Identifier {
+                    kind: IdentifierKind::Function
+                },
+                raw: "fn".to_owned()
+            }
+        );
+    }
 }

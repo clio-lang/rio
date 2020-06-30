@@ -222,9 +222,9 @@ impl Cursor<'_> {
         original = format!("{}{}", first_char, original);
 
         match original {
-            c if c == "if".to_owned() => IdentifierKind::If,
-            c if c == "else".to_owned() => IdentifierKind::Else,
-            c if c == "fn".to_owned() => IdentifierKind::Function,
+            c if c == "if" => IdentifierKind::If,
+            c if c == "else" => IdentifierKind::Else,
+            c if c == "fn" => IdentifierKind::Function,
             c if c == "true" || c == "false" => IdentifierKind::Boolean,
             _ => IdentifierKind::Unknown,
         }
