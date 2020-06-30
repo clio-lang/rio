@@ -78,6 +78,7 @@ pub enum IdentifierKind {
     If,
     Else,
     Function,
+    Boolean,
     Unknown,
 }
 
@@ -224,6 +225,7 @@ impl Cursor<'_> {
             c if c == "if".to_owned() => IdentifierKind::If,
             c if c == "else".to_owned() => IdentifierKind::Else,
             c if c == "fn".to_owned() => IdentifierKind::Function,
+            c if c == "true" || c == "false" => IdentifierKind::Boolean,
             _ => IdentifierKind::Unknown,
         }
     }

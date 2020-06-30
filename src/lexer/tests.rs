@@ -55,4 +55,31 @@ mod tests {
             }
         );
     }
+
+    #[test]
+    fn test_booleans() {
+        let mut tokens = tokenize("true false");
+
+        assert_eq!(
+            tokens.nth(0).unwrap(),
+            Token {
+                len: 4,
+                kind: TokenKind::Identifier {
+                    kind: IdentifierKind::Boolean
+                },
+                raw: "true".to_owned()
+            }
+        );
+
+        assert_eq!(
+            tokens.nth(1).unwrap(),
+            Token {
+                len: 5,
+                kind: TokenKind::Identifier {
+                    kind: IdentifierKind::Boolean
+                },
+                raw: "false".to_owned()
+            }
+        );
+    }
 }
