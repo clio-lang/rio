@@ -131,7 +131,7 @@ impl Cursor<'_> {
         let first_char = self.bump().unwrap();
         let token_kind = match first_char {
             c if is_whitespace(c) => self.whitespace(),
-            c @ '0'..='9' => {
+            '0'..='9' => {
                 let kind = self.number();
 
                 TokenKind::Literal { kind }
@@ -139,7 +139,7 @@ impl Cursor<'_> {
             '"' | '\'' => {
                 let kind = self.string();
 
-                TokenKind::Literal { kind: kind }
+                TokenKind::Literal { kind }
             }
             '+' => Plus,
             '-' => {
