@@ -4,7 +4,7 @@ mod tests {
 
     #[test]
     fn test_basic_tokenizing() {
-        let mut tokens = tokenize("1 = 2");
+        let mut tokens = tokenize("1 = 2").into_iter();
 
         assert_eq!(
             tokens.nth(0).unwrap(),
@@ -58,7 +58,7 @@ mod tests {
 
     #[test]
     fn test_tokenizing_without_whitespace() {
-        let mut tokens = tokenize("1=2");
+        let mut tokens = tokenize("1=2").into_iter();
 
         assert_eq!(
             tokens.nth(0).unwrap(),
@@ -94,7 +94,7 @@ mod tests {
 
     #[test]
     fn test_booleans() {
-        let mut tokens = tokenize("true false");
+        let mut tokens = tokenize("true false").into_iter();
 
         assert_eq!(
             tokens.nth(0).unwrap(),
@@ -121,7 +121,7 @@ mod tests {
 
     #[test]
     fn test_functions() {
-        let mut tokens = tokenize("fn fib n:");
+        let mut tokens = tokenize("fn fib n:").into_iter();
 
         assert_eq!(
             tokens.nth(0).unwrap(),
@@ -143,6 +143,7 @@ mod tests {
         fn fib n:
         ",
         )
+        .into_iter()
         .filter(|t| {
             t.kind != TokenKind::Whitespace
                 && t.kind != TokenKind::Tab

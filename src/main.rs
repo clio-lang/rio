@@ -3,7 +3,7 @@ mod parser;
 
 fn main() {
     let tokens = lexer::tokenize(&"-- fn double n:\n\tn * 2");
-    let ast = parser::parse(tokens);
+    let ast = parser::parse(tokens.into_iter());
 
     println!("{:?}", ast)
 }

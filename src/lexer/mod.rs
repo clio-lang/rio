@@ -85,7 +85,7 @@ pub enum IdentifierKind {
 }
 
 /// Creates an iterator that produces tokens from the input string.
-pub fn tokenize(mut input: &str) -> impl Iterator<Item = Token> + '_ {
+pub fn tokenize(mut input: &str) -> Vec<Token> {
     std::iter::from_fn(move || {
         if input.is_empty() {
             return None;
@@ -94,6 +94,7 @@ pub fn tokenize(mut input: &str) -> impl Iterator<Item = Token> + '_ {
         input = &input[token.len..];
         Some(token)
     })
+    .collect()
 }
 
 /// Parses the first token from the provided input string.
