@@ -143,24 +143,17 @@ impl Cursor<'_> {
                 TokenKind::Literal { kind }
             }
             '+' => Plus,
-            '-' => {
-                if self.first() == '>' {
-                    self.pipe()
-                } else if self.first() == '-' {
-                    self.comment()
-                } else {
-                    Minus
-                }
-            }
+            '-' => match self.first() {
+                '>' => self.pipe(),
+                '-' => self.comment(),
+                _ => Minus,
+            },
             '*' => Star,
             '/' => Slash,
-            '=' => {
-                if self.first() == '>' {
-                    self.assignment()
-                } else {
-                    Equals
-                }
-            }
+            '=' => match self.first() {
+                '>' => self.assignment(),
+                _ => Equals,
+            },
             ':' => Colon,
             '<' => SmallerThen,
             '>' => LargerThen,
